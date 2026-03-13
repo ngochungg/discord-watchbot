@@ -27,6 +27,9 @@ class MonitorBot(commands.Cog):
 
     @app_commands.command(name="status", description="Check Homelab stats at San Jose")
     async def status(self, interaction: discord.Interaction):
+
+        await interaction.response.defer(ephemeral=False)
+
         # Take system metrics using psutil
         cpu_usage = psutil.cpu_percent(interval=1)
         ram = psutil.virtual_memory()
@@ -34,8 +37,8 @@ class MonitorBot(commands.Cog):
         
         # Create an embed message to display the system status
         embed = NotificationMsg.info_msg(
-            title="🖥️ San Jose Node - System Status",
-            description=""
+            title="🖥️ San Jose Node",
+            description="System status"
         )
 
         storage_info = []
@@ -62,7 +65,7 @@ class MonitorBot(commands.Cog):
         
         embed.set_footer(text=f"Requested by {interaction.user.name}")
         
-        await interaction.response.send_message(embed=embed)
+        await interaction.followup.send(embed=embed)
 
     @tasks.loop(hours=1)
     async def check_system_status(self):
