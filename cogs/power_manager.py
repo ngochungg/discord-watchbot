@@ -52,7 +52,7 @@ class PowerManager(commands.Cog):
         
         return len(self.restart_history[name]) >= 3
         
-    @tasks.loop(seconds=10)
+    @tasks.loop(seconds=60)
     async def health_check(self):
         try:
             await self.bot.wait_until_ready()
@@ -163,10 +163,6 @@ class PowerManager(commands.Cog):
                 description=f"Error: {e}"
             )
             await interaction.followup.send(embed=crash_embed)
-        except FileNotFoundError:
-            await interaction.followup.send(content="❌ Lỗi: Không tìm thấy lệnh 'ssh' trong môi trường Bot.")
-        except Exception as e:
-            await interaction.followup.send(content=f"❌ Lỗi không xác định: {e}")
 
 async def setup(bot):
     await bot.add_cog(PowerManager(bot))
