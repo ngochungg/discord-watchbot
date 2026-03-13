@@ -17,3 +17,6 @@ env/
 
 # VScode
 .vscode
+
+# Config files
+monitored_services.json

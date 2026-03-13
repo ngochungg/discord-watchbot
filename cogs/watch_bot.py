@@ -33,14 +33,24 @@ class WatchBot(commands.Cog):
         self.auto_heal.start()
     
     def load_monitored_services(self):
-        if os.path.exists(CONFIG_PATH):
+
+        if not os.path.exists(CONFIG_PATH):# Return empty set if file does not exist
             try:
-                # Check if file is not empty before loading
-                if os.path.getsize(CONFIG_PATH) > 0:
-                    with open(CONFIG_PATH, "r") as f:
-                        return set(json.load(f))
-            except (json.JSONDecodeError, OSError) as e:
-                print(f"Warning: Config file corrupted or empty. Resetting... Error: {e}")
+                with open(CONFIG_PATH, "w") as f:
+                    json.dump([], f)
+                print(f"✅ Created new config file at {CONFIG_PATH}")
+                return set()
+            except OSError as e:
+                print(f"❌ Error creating config file: {e}")
+                return set()
+
+        try:
+            # Check if file is not empty before loading
+            if os.path.getsize(CONFIG_PATH) > 0:
+                with open(CONFIG_PATH, "r") as f:
+                    return set(json.load(f))
+        except (json.JSONDecodeError, OSError) as e:
+            print(f"Warning: Config file corrupted or empty. Resetting... Error: {e}")
                     
     def save_monitor_services(self):
         """Save the current set to JSON"""
@@ -147,8 +157,6 @@ class WatchBot(commands.Cog):
                     self.save_monitor_services()
                     print(f"Removed {name} from tracking: Container not found.")
                         
-                except Exception as e:
-                    print(f"Monitor error for {name}: {e}")
         except Exception as e:
             print(f"❌ Auto-heal Task Error: {e}")
 
