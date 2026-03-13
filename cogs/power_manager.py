@@ -13,6 +13,7 @@ SSH_USER = os.getenv("SSH_USER")
 BROADCAST_IP = os.getenv("BROADCAST_IP")
 MAC_ADDRESS = os.getenv("LAB_MAC")
 NOTIFICATION_CHANNEL_ID = int(os.getenv("NOTIFICATION_CHANNEL_ID", 0))
+ADMIN_ID = int(os.getenv('ADMIN_ID', 0))
 
 class PowerManager(commands.Cog):
     def __init__(self, bot):
@@ -111,6 +112,16 @@ class PowerManager(commands.Cog):
         
     @app_commands.command(name="wake_up", description="Wake up homelab on the San Jose node")
     async def wake_up(self, interaction: discord.Interaction):
+
+        # Admin Check
+        if interaction.user.id != ADMIN_ID:
+            embed = NotificationMsg.error_msg(
+                title="Permission Denied",
+                description="You don't have permission to wake-up homelab."
+            )
+            
+            return await interaction.response.send_message(embed=embed, ephemeral=True)
+
         await interaction.response.defer(ephemeral=True)
         
         try :
@@ -128,6 +139,15 @@ class PowerManager(commands.Cog):
 
     @app_commands.command(name="power_off", description="Power off homelab on the San Jose node")
     async def power_off(self, interaction: discord.Interaction):
+
+        # Admin Check
+        if interaction.user.id != ADMIN_ID:
+            embed = NotificationMsg.error_msg(
+                title="Permission Denied",
+                description="You don't have permission to power off homelab."
+            )
+            
+            return await interaction.response.send_message(embed=embed, ephemeral=True)
 
         await interaction.response.defer(ephemeral=True)
 
