@@ -15,22 +15,23 @@ class Fail2Ban(commands.Cog):
         self.port = 5000
         self.server_task = None
 
+    async def cog_load(self):
         self.server_task = self.bot.loop.create_task(self.start_web_server())
 
     async def start_web_server(self):
 
         # Create a web server using aiohttp
         app = web.Application()
-        app.router.app_post('alert', self.handle_alert)
+        app.router.add_post('/alert', self.handle_alert)
 
         runner = web.AppRunner(app)
         await runner.setup()
 
         # Only listen on localhost
-        site = web.TCPSite(runner, 'localhost', self.port)
+        site = web.TCPSite(runner, '127.0.0.1', self.port)
         await site.start()
 
-        print(f"Fail2Ban web server started on http://localhost:{self.port}")
+        print(f"Fail2Ban web server started on http://127.0.0.1:{self.port}")
 
     async def handle_alert(self, request):
         try:
@@ -45,11 +46,19 @@ class Fail2Ban(commands.Cog):
                     embed = NotificationMsg.error_msg(
                         title=f"{alert_type}", description=message
                     )
-                else:
-                    embed = NotificationMsg.warning_msg(
+
+                elif status == "success":
+                    embed = NotificationMsg.success_msg(
                         title=f"{alert_type}", 
                         description=message
                     )
+
+                else:
+                    embed = NotificationMsg.warning_msg(
+                        title=f"{alert_type}",
+                        description=message
+                    )
+                    
                 await channel.send(embed=embed)
 
             return web.Response(status=200, text="Alert sent to Discord")
