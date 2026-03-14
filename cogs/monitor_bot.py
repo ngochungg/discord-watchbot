@@ -5,7 +5,6 @@ from discord import app_commands
 from discord.ext import commands, tasks
 import psutil
 import platform
-import datetime
 
 from cogs.utils.notification_msg import NotificationMsg
 from cogs.utils.get_bar import Bar
