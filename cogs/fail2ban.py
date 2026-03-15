@@ -28,10 +28,10 @@ class Fail2Ban(commands.Cog):
         await runner.setup()
 
         # Only listen on localhost
-        site = web.TCPSite(runner, '127.0.0.1', self.port)
+        site = web.TCPSite(runner, '0.0.0.0', self.port)
         await site.start()
 
-        print(f"Fail2Ban web server started on http://127.0.0.1:{self.port}")
+        print(f"Fail2Ban web server started on port {self.port} (Listening for Lab Node)")
 
     async def handle_alert(self, request):
         try:
