@@ -41,4 +41,3 @@ class NotificationMsg:
             color=discord.Color.blue()
         )
         return embed
-    

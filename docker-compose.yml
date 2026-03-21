@@ -3,7 +3,7 @@ services:
     build: .
     container_name: discord_bot
     restart: always
-    network_mode: host
+    network_mode: "host"
     environment:
       - PYTHONUNBUFFERED=1
       - SSH_USER=${SSH_USER}
@@ -12,6 +12,6 @@ services:
       - .env
     volumes:
       - .:/app
-      # - /home/cybercat/.ssh:/mnt/.ssh:ro
+      - /home/cybercat/.ssh:/mnt/.ssh:ro
       - /var/run/docker.sock:/var/run/docker.sock
     pid: "host"

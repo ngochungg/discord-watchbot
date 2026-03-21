@@ -5,13 +5,13 @@ from aiohttp import web
 
 from cogs.utils.notification_msg import NotificationMsg
 
-FAIL2BAN_CHANNEL_ID = int(os.getenv("FAIL2BAN_CHANNEL_ID", 0))
+ALERT_CHANNEL_ID = int(os.getenv("ALERT_CHANNEL_ID", 0))
 ADMIN_ID = int(os.getenv("ADMIN_ID", 0))
 
 class Fail2Ban(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.channel_id = FAIL2BAN_CHANNEL_ID
+        self.channel_id = ALERT_CHANNEL_ID
         self.port = 5000
         self.server_task = None
 
@@ -38,7 +38,7 @@ class Fail2Ban(commands.Cog):
             data = await request.json()
             alert_type = data.get('type', 'System')
             message = data.get("message", "No content")
-            status = data.get("status", "info")
+            status = data.get("status", "")
 
             channel = self.bot.get_channel(self.channel_id)
             if channel:
@@ -50,6 +50,12 @@ class Fail2Ban(commands.Cog):
                 elif status == "success":
                     embed = NotificationMsg.success_msg(
                         title=f"{alert_type}", 
+                        description=message
+                    )
+
+                elif status == "info":
+                    embed = NotificationMsg.info_msg(
+                        title=f"{alert_type}",
                         description=message
                     )
 
