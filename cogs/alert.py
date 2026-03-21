@@ -5,13 +5,13 @@ from aiohttp import web
 
 from cogs.utils.notification_msg import NotificationMsg
 
-ALERT_CHANNEL_ID = int(os.getenv("ALERT_CHANNEL_ID", 0))
+FAIL2BAN_CHANNEL_ID = int(os.getenv("FAIL2BAN_CHANNEL_ID", 0))
+REVERSE_SHELL_MONITOR_CHANNEL_ID = int(os.getenv("REVERSE_SHELL_MONITOR_CHANNEL_ID", 0))
 ADMIN_ID = int(os.getenv("ADMIN_ID", 0))
 
 class Alert(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.channel_id = ALERT_CHANNEL_ID
         self.port = 5000
         self.server_task = None
 
@@ -39,8 +39,18 @@ class Alert(commands.Cog):
             alert_type = data.get('type', 'System')
             message = data.get("message", "No content")
             status = data.get("status", "")
+            to_channel = data.get("to_channel", "")
 
-            channel = self.bot.get_channel(self.channel_id)
+            if to_channel == "fail2ban":
+                channel_id = FAIL2BAN_CHANNEL_ID
+
+            elif to_channel == "reverse_shell_monitor":
+                channel_id = REVERSE_SHELL_MONITOR_CHANNEL_ID
+                
+            else:
+                return web.Response(status=400, text="Invalid channel")
+
+            channel = self.bot.get_channel(channel_id)
             if channel:
                 if status == "error":
                     embed = NotificationMsg.error_msg(
@@ -53,14 +63,14 @@ class Alert(commands.Cog):
                         description=message
                     )
 
-                elif status == "info":
-                    embed = NotificationMsg.info_msg(
+                elif status == "warning":
+                    embed = NotificationMsg.warning_msg(
                         title=f"{alert_type}",
                         description=message
                     )
 
                 else:
-                    embed = NotificationMsg.warning_msg(
+                    embed = NotificationMsg.info_msg(
                         title=f"{alert_type}",
                         description=message
                     )
