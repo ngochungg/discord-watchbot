@@ -1,0 +1,9 @@
+{
+  "disks": [
+    {"name": "Root (/)", "path": "/", "threshold": 90}
+  ],
+  "system": {
+    "cpu_threshold": 90,
+    "ram_threshold": 85
+  }
+}

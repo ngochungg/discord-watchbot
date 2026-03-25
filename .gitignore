@@ -1,0 +1,22 @@
+# Python bytecode
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Môi trường ảo
+venv/
+.venv/
+env/
+
+# Biến môi trường (CỰC KỲ QUAN TRỌNG: Không push API Key lên GitHub)
+.env
+
+# MacOS files
+.DS_Store
+
+# VScode
+.vscode
+
+# Config files
+monitored_services.json
