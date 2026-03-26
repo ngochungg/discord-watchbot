@@ -14,5 +14,6 @@ services:
       - .:/app
       - /home/cybercat/.ssh:/mnt/.ssh:ro
       - /root/.sliver/logs/sliver.log:/data/logs/sliver.log:ro
+      - /opt/temp:/opt/temp:ro
       - /var/run/docker.sock:/var/run/docker.sock
     pid: "host"

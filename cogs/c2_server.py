@@ -12,6 +12,7 @@ TEAMSERVER_IP = os.getenv('TEAMSERVER_IP')
 DIRECTORY = os.getenv('DIRECTORY')
 ALERT_URL = os.getenv('ALERT_URL')
 SLIVER_LOG_PATH = os.getenv('SLIVER_LOG_PATH')
+ADMIN_ID = int(os.getenv('ADMIN_ID', 0))
 
 class HostView(discord.ui.View):
     def __init__(self, process, port, timeout_task):
@@ -101,6 +102,15 @@ class C2Payload(commands.Cog):
         port="The port to listen on (default: 8088)",
     )
     async def host_payload(self, interaction: discord.Interaction, directory: str = DIRECTORY, port: int = 8088):
+
+        # Admin Check
+        if interaction.user.id != ADMIN_ID:
+            embed = NotificationMsg.error_msg(
+                title="Permission Denied",
+                description="You don't have permission to manage C2 server."
+            )
+            
+            return await interaction.response.send_message(embed=embed, ephemeral=True)
         
         # Check directory exists
         if not os.path.exists(directory):
