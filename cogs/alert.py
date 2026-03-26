@@ -7,6 +7,7 @@ from cogs.utils.notification_msg import NotificationMsg
 
 FAIL2BAN_CHANNEL_ID = int(os.getenv("FAIL2BAN_CHANNEL_ID", 0))
 REVERSE_SHELL_MONITOR_CHANNEL_ID = int(os.getenv("REVERSE_SHELL_MONITOR_CHANNEL_ID", 0))
+C2_ALERT_CHANNEL_ID = int(os.getenv("C2_ALERT_CHANNEL_ID", 0))
 ADMIN_ID = int(os.getenv("ADMIN_ID", 0))
 
 class Alert(commands.Cog):
@@ -46,8 +47,12 @@ class Alert(commands.Cog):
 
             elif to_channel == "reverse_shell_monitor":
                 channel_id = REVERSE_SHELL_MONITOR_CHANNEL_ID
+
+            elif to_channel == "c2_server":
+                channel_id = C2_ALERT_CHANNEL_ID
                 
             else:
+                print(f"Invalid channel: {to_channel}")
                 return web.Response(status=400, text="Invalid channel")
 
             channel = self.bot.get_channel(channel_id)
